@@ -1,0 +1,4 @@
+logger==1.4
+click==7.0
+fylesdk==0.10.0
+git-pylint-commit-hook==2.5.1
