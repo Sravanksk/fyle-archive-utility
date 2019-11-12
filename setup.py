@@ -9,7 +9,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='fyle-archive-utility',
-    version='0.1.0',
+    version='0.1.1',
     author='Fyle',
     author_email='sravan.kumar@fyle.in',
     description='Command-line tool to download Fyle data.',
@@ -20,9 +20,9 @@ setuptools.setup(
     url='https://github.com/fylein/fyle-archive-utility',
     packages=setuptools.find_packages(),
     install_requires=[
-        'logger==1.4'
-        'Click==7.0'
-        'fylesdk==0.10.0'
+        'logger==1.4',
+        'Click==7.0',
+        'fylesdk==0.10.0',
     ],
     classifiers=[
         'Topic :: Internet :: WWW/HTTP',
