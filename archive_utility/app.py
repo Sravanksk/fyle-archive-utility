@@ -29,7 +29,7 @@ except:
 
 
 @click.group()
-@click.version_option(version='0.01', prog_name='Fyle-Archive-Utility')
+@click.version_option(version='0.2.1', prog_name='Fyle-Archive-Utility')
 def main():
     """  Fyle Archive Utility """
 
