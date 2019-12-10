@@ -10,12 +10,28 @@ from archive_utility.fyle_connection import FyleConnector
 
 logger = logging.getLogger('FyleArchiveUtility')
 
+SUPPORTED_EXTENSIONS = ('csv', 'json')
+
+try:
+    path_to_json = os.path.expanduser('~/.config.json')
+    with open(path_to_json, 'r') as config_file:
+        credentials = json.load(config_file)
+        config_file.close()
+    CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, BASE_URL = credentials['client_id'], credentials['client_secret'], \
+                                                        credentials['refresh_token'], credentials['base_url']
+    # Make connection with FYLE using the above credentials
+    fyle_connection = FyleConnector(
+        CLIENT_ID, CLIENT_SECRET, BASE_URL, REFRESH_TOKEN)
+
+    dumper = Dumper(fyle_connection)
+except:
+    click.echo(click.style('Please make connection with FYLE', fg='red', blink=True))
+
 
 @click.group()
 @click.version_option(version='0.01', prog_name='Fyle-Archive-Utility')
 def main():
     """  Fyle Archive Utility """
-
 
 # Using this command to get FYLE credentials and store them in a json file
 @main.command()
@@ -30,7 +46,7 @@ def connect(client_id, client_secret, refresh_token, base_url):
     :param refresh_token: Refresh Token for Fyle API.
     :param base_url: BaseURL.
     """
-    cred_file = os.path.expanduser('~/.config.json')
+    cred_file = os.path.expanduser('~/.fyleconfig.json')
     with open(cred_file, 'w') as handler:
         json.dump({'client_id': client_id, 'client_secret': client_secret, 'refresh_token': refresh_token,
                    'base_url': base_url}, handler, sort_keys=True, indent=4)
@@ -39,39 +55,42 @@ def connect(client_id, client_secret, refresh_token, base_url):
 
 
 @main.command()
-@click.option('--file_format', help="Enter the format of the file 'csv' or 'json' ", required=True)
+@click.option('--file_format', help="Enter the format of the file 'csv' or 'json' ", default='csv')
 @click.option('--state', help="Enter the state of Expenses [ 'PAID' , 'APPROVED' ]")
 @click.option('--path', help='Enter the directory where you want to save your file', required=True)
-def expenses(file_format, state, path):
+@click.option('--approved_at_gte', help='Enter approved date', default=None)
+@click.option('--approved_at_lte', help='Enter approved date', default=None)
+@click.option('--download_attachments', help='If set to True, all attachments will be downloaded', default=None)
+def expenses(file_format, state, path, approved_at_gte, approved_at_lte, download_attachments):
     """
-
-    :param format: format of the file to be generated 'CSV' or 'JSON'
+    :param file_format: format of the file to be generated 'CSV' or 'JSON'
     :param state:  state of the Expense [ 'PAID' , 'DRAFT' , 'APPROVED' , 'APPROVER_PENDING' , 'COMPLETE' ]
     :param path:   Takes the path of the file to save the data.
+    :param approved_at_gte:  Date string in yyyy-MM-ddTHH:mm:ss.SSSZ format
+    :param approved_at_lte:  Date string in yyyy-MM-ddTHH:mm:ss.SSSZ format.
+    :param download_attachments: (bool) - If set to 'True', all attachments will be downloaded.
+
     """
-    if file_format == 'json':
-        response_data = fyle_connection.extract_expenses(state=state)
-        logger.info('Downloading data from Fyle in JSON format.')
-        Dumper.dump_json(response_data, path)
-    elif file_format == 'csv':
-        response_data = fyle_connection.extract_expenses(state=state)
-        logger.info('Downloading data from Fyle in CSV format.')
-        Dumper.dump_csv(response_data, path)
+    if file_format in SUPPORTED_EXTENSIONS:
+        logger.info('Downloading data from Fyle')
+        approved_at = []
+        if approved_at_gte:
+            approved_at.append('gte:{0}'.format(approved_at_gte))
+        if approved_at_lte:
+            approved_at.append('lte:{0}'.format(approved_at_lte))
+
+        response_data = fyle_connection.extract_expenses(state=state, approved_at=approved_at)
+        data = [i for i in response_data if i['has_attachments'] is True]
+
+        if not response_data:
+            logger.info('No Expenses found')
+        elif file_format == 'csv':
+            dumper.dump_csv(response_data, path)
+            logger.info('Download Successful !')
+        else:
+            dumper.dump_json(response_data, path)
+            logger.info('Download Successful !')
+        if download_attachments == 'True':
+            dumper.dump_attachments(data, path)
     else:
-        logger.warning('Some of the parameters are wrong')
-
-
-if __name__ == "__main__":
-    # Extracting FYLE Credentials from the json file
-    try:
-        path_to_json = os.path.expanduser('~/.config.json')
-        with open(path_to_json, 'r') as config_file:
-            credentials = json.load(config_file)
-            config_file.close()
-        CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, BASE_URL = credentials['client_id'], credentials['client_secret'], credentials['refresh_token'], credentials['base_url']
-        # Make connection with FYLE using the above credentials
-        fyle_connection = FyleConnector(
-            CLIENT_ID, CLIENT_SECRET, BASE_URL, REFRESH_TOKEN)
-    except:
-        click.echo(click.style('Please make connection with FYLE', fg='red'))
-    main()
+        logger.error('%s format not supported', file_format)

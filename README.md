@@ -36,6 +36,24 @@ Now you are able to access the command line interface for downloading Fyle data
        $ python -m fyle_archive_utility expenses --state='COMPLETE' --file_format=csv --path='/Users/sravankumar/Desktop'    // Lists out all the expenses of your org that match the parameters and saves it as a csv file in the given path
        
        $ python -m fyle_archive_utility expenses --state='APPROVED' --file_format=json --path='/Users/sravankumar/Desktop'    // Lists out all the expenses of your org that match the parameters and saves it as a json file in the given path
+       
+       $ python -m fyle_archive_utility expenses --state='APPROVED' --file_format=csv --path='/Users/sravankumar/Desktop' --approved_at_gte='2019-11-01T00:00:00.000Z'    // Lists out all the expenses of your org that match the parameters with date filters and saves it as a csv file in the given path
+       
+       $ python -m fyle_archive_utility expenses --state='APPROVED' --file_format=json --path='/Users/sravankumar/Desktop' --approved_at_gte='2019-11-01T00:00:00.000Z'    // Lists out all the expenses of your org that match the parameters with date filters and saves it as a json file in the given path
+       
+       $ python -m fyle_archive_utility expenses --state='APPROVED' --file_format=csv --path='/Users/sravankumar/Desktop' --approved_at_lte='2019-11-01T00:00:00.000Z'    // Lists out all the expenses of your org that match the parameters with date filters and saves it as a csv file in the given path
+
+       $ python -m fyle_archive_utility expenses --state='APPROVED' --file_format=json --path='/Users/sravankumar/Desktop' --approved_at_lte='2019-11-01T00:00:00.000Z'    // Lists out all the expenses of your org that match the parameters with date filters and saves it as a json file in the given path
+
+       $ python -m fyle_archive_utility expenses --state='APPROVED' --file_format=csv --path='/Users/sravankumar/Desktop' --approved_at_gte='2019-11-01T00:00:00.000Z' --approved_at_lte='2019-11-30T00:00:00.000Z'    // Lists out all the expenses of your org that match the parameters with date filters and saves it as a csv file in the given path
+       
+       $ python -m fyle_archive_utility expenses --state='APPROVED' --file_format=json --path='/Users/sravankumar/Desktop' --approved_at_gte='2019-11-01T00:00:00.000Z' --approved_at_lte='2019-11-30T00:00:00.000Z'    // Lists out all the expenses of your org that match the parameters with date filters and saves it as a json file in the given path
+              
+       $ python -m fyle_archive_utility expenses --state='APPROVED' --file_format=csv --path='/Users/sravankumar/Desktop' --approved_at_gte='2019-11-01T00:00:00.000Z' --download_attachments='True'    // Lists out all the expenses of your org that match the parameters with date filters along with attachments and saves it as a csv file in the given path
+
+       $ python -m fyle_archive_utility expenses --state='APPROVED' --file_format=csv --path='/Users/sravankumar/Desktop' --approved_at_gte='2019-11-01T00:00:00.000Z' --approved_at_lte='2019-11-30T00:00:00.000Z' --download_attachments='True'    // Lists out all the expenses of your org that match the parameters with date filters along with attachments and saves it as a json file in the given path
+        
+        
 
 ## Contribute
 

@@ -1,15 +1,13 @@
 """
 Build the PyPi package.
 """
-
 import setuptools
-
 with open('README.md', 'r') as f:
     long_description = f.read()
 
 setuptools.setup(
     name='fyle-archive-utility',
-    version='0.1.1',
+    version='0.2.0',
     author='Fyle',
     author_email='sravan.kumar@fyle.in',
     description='Command-line tool to download Fyle data.',
@@ -33,6 +31,6 @@ setuptools.setup(
     ],
     entry_points='''
         [console_scripts]
-        main=main:FyleArchive
+        fyle_archive_utility=archive_utility.app:main
     ''',
 )
