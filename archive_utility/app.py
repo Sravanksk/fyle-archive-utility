@@ -60,26 +60,37 @@ def connect(client_id, client_secret, refresh_token, base_url):
 @click.option('--path', help='Enter the directory where you want to save your file', required=True)
 @click.option('--approved_at_gte', help='Enter approved date', default=None)
 @click.option('--approved_at_lte', help='Enter approved date', default=None)
+@click.option('--updated_at_gte', help='Enter updated date', default=None)
+@click.option('--updated_at_lte', help='Enter updated date', default=None)
 @click.option('--download_attachments', help='If set to True, all attachments will be downloaded', default=None)
-def expenses(file_format, state, path, approved_at_gte, approved_at_lte, download_attachments):
+def expenses(file_format, state, path, approved_at_gte, approved_at_lte, updated_at_gte, updated_at_lte, download_attachments):
     """
     :param file_format: format of the file to be generated 'CSV' or 'JSON'
     :param state:  state of the Expense [ 'PAID' , 'DRAFT' , 'APPROVED' , 'APPROVER_PENDING' , 'COMPLETE' ]
     :param path:   Takes the path of the file to save the data.
     :param approved_at_gte:  Date string in yyyy-MM-ddTHH:mm:ss.SSSZ format
     :param approved_at_lte:  Date string in yyyy-MM-ddTHH:mm:ss.SSSZ format.
+    :param updated_at_gte: Date string in yyyy-MM-ddTHH:mm:ss.SSSZ format.
+    :param updated_at_lte: Date string in yyyy-MM-ddTHH:mm:ss.SSSZ format.
     :param download_attachments: (bool) - If set to 'True', all attachments will be downloaded.
 
     """
     if file_format in SUPPORTED_EXTENSIONS:
         logger.info('Downloading data from Fyle')
+        
         approved_at = []
         if approved_at_gte:
             approved_at.append('gte:{0}'.format(approved_at_gte))
         if approved_at_lte:
             approved_at.append('lte:{0}'.format(approved_at_lte))
 
-        response_data = fyle_connection.extract_expenses(state=state, approved_at=approved_at)
+        updated_at = []
+        if updated_at_gte:
+            updated_at.append('gte:{0}'.format(updated_at_gte))
+        if updated_at_lte:
+            updated_at.append('lte:{0}'.format(updated_at_lte))
+
+        response_data = fyle_connection.extract_expenses(state=state, approved_at=approved_at, updated_at=updated_at)
         data = [i for i in response_data if i['has_attachments'] is True]
 
         if not response_data:

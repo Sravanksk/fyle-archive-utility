@@ -26,14 +26,15 @@ class FyleConnector:
             refresh_token=self.__refresh_token
         )
 
-    def extract_expenses(self, state, approved_at):
+    def extract_expenses(self, state, approved_at, updated_at):
         """
         Get a list of existing Expenses, that match the parameters
+        :param updated_at: Date string in yyyy-MM-ddTHH:mm:ss.SSSZ format along with operator in RHS colon pattern.
         :param approved_at: Date string in yyyy-MM-ddTHH:mm:ss.SSSZ format along with operator in RHS colon pattern.
         :param state: state of the expense [ 'PAID' , 'DRAFT' , 'APPROVED' , 'APPROVER_PENDING' , 'COMPLETE' ]
         :return: List with dicts in Expenses schema.
         """
-        expenses = self.__connection.Expenses.get_all(state=state, approved_at=approved_at)
+        expenses = self.__connection.Expenses.get_all(state=state, approved_at=approved_at, updated_at=updated_at)
         return expenses
 
     def extract_attachments(self, expense_id):
