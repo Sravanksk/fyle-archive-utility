@@ -7,7 +7,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='fyle-archive-utility',
-    version='0.2.1',
+    version='0.2.0',
     author='Fyle',
     author_email='sravan.kumar@fyle.in',
     description='Command-line tool to download Fyle data.',

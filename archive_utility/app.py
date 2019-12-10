@@ -13,7 +13,7 @@ logger = logging.getLogger('FyleArchiveUtility')
 SUPPORTED_EXTENSIONS = ('csv', 'json')
 
 try:
-    path_to_json = os.path.expanduser('~/.fyleconfig.json')
+    path_to_json = os.path.expanduser('~/.config.json')
     with open(path_to_json, 'r') as config_file:
         credentials = json.load(config_file)
         config_file.close()
